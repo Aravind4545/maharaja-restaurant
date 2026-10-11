@@ -677,32 +677,29 @@ function initMobileNav() {
 
   if (!toggleBtn || !navLinks) return;
 
-  toggleBtn.addEventListener("click", () => {
-    const isVisible = navLinks.style.display === "flex";
-    if (isVisible) {
-      navLinks.style.display = "";
-      toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-    } else {
-      navLinks.style.display = "flex";
-      navLinks.style.flexDirection = "column";
-      navLinks.style.position = "absolute";
-      navLinks.style.top = "var(--header-height)";
-      navLinks.style.left = "0";
-      navLinks.style.width = "100%";
-      navLinks.style.background = "#120c08";
-      navLinks.style.padding = "24px";
-      navLinks.style.borderBottom = "1px solid var(--gold-border-bright)";
-      toggleBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-    }
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = navLinks.classList.toggle("mobile-open");
+    toggleBtn.innerHTML = isOpen 
+      ? '<i class="fa-solid fa-xmark"></i>' 
+      : '<i class="fa-solid fa-bars"></i>';
   });
 
   // Close when clicking nav links
   navLinks.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
-      if (window.innerWidth <= 768) {
-        navLinks.style.display = "";
+      navLinks.classList.remove("mobile-open");
+      toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    });
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+      if (navLinks.classList.contains("mobile-open")) {
+        navLinks.classList.remove("mobile-open");
         toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
       }
-    });
+    }
   });
 }
